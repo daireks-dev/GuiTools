@@ -1,5 +1,5 @@
 Put the modules scripts under the same parent!
 Make a folder/good finding place for it in Replicated Storage.
 
-Of course, you can always change the paths in GuiUtils to your liking under "Imports"
+Of course, you can always change the paths in GuiTools to your liking under "Imports"
 If you do so, I reccomend parenting everything under GuiUtils!

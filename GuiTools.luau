@@ -1,5 +1,5 @@
 --Imports:
-local PreciseUDim2 = require(script.Parent.PreciseUDim2)
+local PreciseUDim2 = require(script.PreciseUDim2)
 
 local GuiUtils = {}
 
@@ -8,17 +8,17 @@ local function GetValidGuiParent(parent: Instance): Instance
 	if parent:IsA("GuiObject") or parent:IsA("ScreenGui") then
 		return parent
 	else
-		local foundParent = parent:FindFirstAncestorOfClass("GuiObject")
+		local foundParent = parent:FindFirstAncestorWhichIsA("GuiObject")
 		assert(foundParent, "No ancestor of type GuiObject could be found for " ..  tostring(parent))
 		return foundParent
 	end
 end
 
 --Public Function: Reparents GuiObjects without changing its current size and position 
-function GuiUtils.Reparent(guiObject: GuiObject, parent: Instance)
+function GuiUtils.Reparent(guiObject: GuiObject, newParent: Instance)
 	--Get Parents of type GuiObject or Nearest Ancestors of type GuiObject
 	local originalParent = GetValidGuiParent(guiObject.Parent)
-	local newParent = GetValidGuiParent(parent)
+	local newParent = GetValidGuiParent(newParent)
 
 	-- Convert to offset-only PreciseUDim2 based on current parent
 	local newSize = PreciseUDim2.FromUDim2(guiObject.Size):ConvertToOffsetRelativeTo(originalParent)
@@ -77,19 +77,13 @@ function GuiUtils.CenterOn(guiObject: GuiObject, targetGuiObject: GuiObject)
 	local oldAnchor = guiObject.AnchorPoint
 	GuiUtils.SetAnchorPoint(guiObject, Vector2.new(0.5, 0.5))
 	
-	local targetSize = targetGuiObject.AbsoluteSize
-	local targetPos = targetGuiObject.AbsolutePosition
-
-	local centerPos = Vector2.new(
-		targetPos.X + targetSize.X * 0.5,
-		targetPos.Y + targetSize.Y * 0.5
-	)
+	local oldParent = guiObject.Parent
+	local tempParent = targetGuiObject
 	
-	local guiObjectParent = GetValidGuiParent(guiObject.Parent)
-	local offsetPosition = PreciseUDim2.new(0, centerPos.X, 0, centerPos.Y)
-	local scalePosition = offsetPosition:ConvertToScaleRelativeTo(guiObjectParent)
+	GuiUtils.Reparent(guiObject, tempParent)
+	guiObject.Position = UDim2.new(0.5, 0, 0.5, 0)
 	
-	guiObject.Position = scalePosition:ToUDim2()
+	GuiUtils.Reparent(guiObject, oldParent)
 	GuiUtils.SetAnchorPoint(guiObject, oldAnchor)
 end
 
