@@ -67,3 +67,30 @@ textLabel.Parent = script.Parent
 
 GuiTools.CenterOn(textLabel, frame)
 ```
+
+## `SimulateAbsolutes()`
+
+* parameters: targetObject: GuiObject, rootObject: GuiObject
+* returns: (Vector2, Vector2)
+
+Allows user to retrieve absolute position/size data from gui in non-rendered settings. (e.g. ServerStorage, ReplicatedStorage, etc.)
+
+```lua
+local GuiTools = require(path.to.GuiTools)
+
+-- Suppose you have a Frame stored in ServerStorage, and you're trying to simulate its layout
+local ServerStorage = game:GetService("ServerStorage")
+
+-- Your GUI hierarchy looks like this:
+-- ServerStorage.MyGuiRoot (Frame)
+-- └── ChildFrame (Frame)
+
+local rootObject = ServerStorage.MyGuiRoot
+local targetObject = rootObject.ChildFrame
+
+-- Get the simulated absolute position and size of the target object
+local absPosition, absSize = GuiTools.SimulateAbsolutes(targetObject, rootObject)
+
+print("Absolute Position:", absPosition)
+print("Absolute Size:", absSize)
+```
